@@ -1,0 +1,46 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         Int              @id @default(autoincrement())
+  nome       String
+  email      String           @unique
+  senha      String
+  createdAt  DateTime         @default(now())
+  simulacoes SimulacaoSalva[]
+  taxasCDI   TaxaCDI[]
+}
+
+model TaxaCDI {
+  id           Int      @id @default(autoincrement())
+  userId       Int?
+  user         User?    @relation(fields: [userId], references: [id])
+  valor        Float
+  dataVigencia DateTime @default(now())
+}
+
+model SimulacaoSalva {
+  id                Int      @id @default(autoincrement())
+  userId            Int
+  user              User     @relation(fields: [userId], references: [id])
+  tipo              String
+  tipoRemuneracao   String
+  valorInicial      Float
+  dataVencimento    DateTime
+  percentualCDI     Float?
+  taxaAnual         Float?
+  resultadoBruto    Float
+  ir                Float
+  resultadoLiquido  Float
+  aliquotaIR        Float
+  grupoComparacaoId String?
+  cdiValor          Float?
+  nomeComparacao    String?
+  createdAt         DateTime @default(now())
+}
